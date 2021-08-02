@@ -1,4 +1,4 @@
-<meta name="google-site-verification" content="S1crJe1cLekHvh_2difnrK5KhdqxazVzpxhcbmJE9TA" />
+<meta name="google-site-verification" content="S1crJe1cLekHvh_2difnrK5KhdqxazVzpxhcbmJE9TA" />  
 # Dualboot Cloudready
 
 The purpose of this project is to dual-boot latest version of cloudready. Neverware has stopped the dual boot functionality from Cloudready v64. So here is the 
