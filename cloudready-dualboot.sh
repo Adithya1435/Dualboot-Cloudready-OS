@@ -37,7 +37,7 @@ function getPartNo {
 function main {
     if ! [ $# -ge 4 ]; then
         echo "Invalid argument"
-        echo "USAGE: cloudready-dualboot.sh <cloudready.img> <efi_part> <root_a_part> <state_part>"
+        echo "Usage: cloudready-dualboot.sh <cloudready.img> <efi_part> <root_a_part> <state_part> <oem_part>"
         exit 1
     fi
     
