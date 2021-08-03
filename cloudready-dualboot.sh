@@ -200,7 +200,7 @@ insmod part_gpt
 insmod ext2
 set root=(hd$diskno,gpt"${hdd_root_a_part_no}")
 search --no-floppy --fs-uuid --set=root $uuid
-linux /boot/vmlinuz root=/dev/"${hdd_root_a_part}" init=/sbin/init rootwait rw noresume console=tty2 i915.modeset=1 loglevel=1 quiet noinitrd tpm_tis.force=1 cros_secure cros_debug
+linux /boot/vmlinuz root="${hdd_root_a_part}" init=/sbin/init rootwait rw noresume console=tty2 i915.modeset=1 loglevel=1 quiet noinitrd tpm_tis.force=1 cros_secure cros_debug
 }"
     echo "*************************************************************************"
     echo "Copy the above grub entry and paste it at /etc/grub.d/40_custom"
