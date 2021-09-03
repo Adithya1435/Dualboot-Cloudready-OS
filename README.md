@@ -4,10 +4,11 @@ The purpose of this project is to dual-boot latest version of cloudready. Neverw
 script to do that on a **Single hard disk (Not with Second hard disk)**.
 
 ## Prerequisites
-1. UEFI based PC (GPT Disk)
-2. Minimum of 16GB free space
-3. Cloudready image above v70
-4. 8GB USB (Not needed if you are dual booting with linux)
+- UEFI based PC (GPT Disk)
+- x86_64 based CPU
+- Minimum of 16GB free space
+- Cloudready image above v70
+- 8GB USB (Not needed if you are dual booting with linux)
 
  > Note: I am not responsible for any data loss. Please follow this guide carefully
 
