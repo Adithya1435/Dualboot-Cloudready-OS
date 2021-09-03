@@ -119,7 +119,7 @@ function main {
           exit 1
       
     fi
-    echo "Step 7: Fixing partition data..."
+    echo "Step 3: Fixing partition data..."
     sed -i "s/#ROOT/${hdd_root_a_part_no}/g" partition-layout.sh
     sed -i "s/#STATE/${hdd_state_part_no}/g" partition-layout.sh
     sed -i "s/#OEM/${hdd_oem_part_no}/g" partition-layout.sh
@@ -131,10 +131,10 @@ function main {
         echo
         echo "Fixing Partition data Failed, try fixing it manually"
     fi
-    echo "Step 9: Unmounting the partitions"
+    echo "Step 4: Unmounting the partitions"
     umount ${local_root_a}
     umount ${local_state}
-    echo "Step 6: Generating GRUB Configuration.."
+    echo "Step 5: Generating GRUB Configuration.."
     echo 
     echo "***************************************************************************"
     echo -n "menuentry Cloudready {
