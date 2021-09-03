@@ -74,9 +74,9 @@ function main {
     uuid="blkid -s UUID -o value /dev/$2"
     
     echo
-    echo "-----------------------------"
-    echo "Cloudready Dualboot Installer"
-    echo "-----------------------------"
+    echo "------------------------------------"
+    echo "   Cloudready Dualboot Installer"
+    echo "------------------------------------"
     echo
     echo -n "Enter the disk number (Only Number): "
     read diskno
