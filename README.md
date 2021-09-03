@@ -127,7 +127,28 @@ You can follow the same steps mentioned above to dualboot cloudready with linux.
 25. That's it now reboot your PC and select Cloudready   
  > Note : Don't select Unknown linux distribution from grub instead select Cloudready
  
-## FAQ (Freqently Asked Questions)
+## FAQ (Frequently Asked Questions)
  
-1. 
-   
+1. **Is dualbooting by this method safe?**  
+Yes, it is absolutely safe unless you mess with your partitions
+ 
+2. **Why only 3 partitions are required to dualboot cloudready whereas the image has 12 partitions?**  
+These partitions are enough to boot the OS, you can create ROOT-B partition to update cloudready natively
+
+3. **Linux (Beta) dosen't work in my system after doing this, so what should i do now?**  
+Make sure to disable crostini-use-dlc from chrome://flags and retry. If that dosen't work then try downgrading to older version of cloudready. If you have dgpu then switch it to  igpu
+ 
+4. **I get "wrongfs type,bad superblock" error in option 1?**  
+This problem occurs due to bad superblock in the image, try option 2 instead
+ 
+5. **Will I get all the functionality of cloudready?**  
+Yes, you will get everything
+
+6. **Why Filesystem-verity is disabled and cloudready recommends reinstalling, so should i reinstall?**  
+As we are manually installing cloudready, filesystem verity will be disabled. Just click "I understand" and tick the check box to never display it again.
+ 
+7. **I cannot see my internal drives mounted so how can I mount it?**  
+Internal drives do not show up in cloudready. Further study needed
+ 
+8. **I get "special device p27 does not exist, Installation aborted" in option 1**  
+This error occurs if you use cloudready version 89 or below. Use option 2 instead
