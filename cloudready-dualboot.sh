@@ -17,7 +17,7 @@ fi
 # Mount the partition if not already
 # $1: Partition name
 # $2: Mount point
-function mountIfNotAlready {
+function mount {
     local part_name="$1"
     local mount_point="$2"
     if [ -e "${mount_point}" ]; then
@@ -86,9 +86,9 @@ function main {
     echo
     echo -n "Step 1: Copying ROOT-A..."
     # Mount partition#3 (ROOT-A) of the image
-    mountIfNotAlready "${img_root_a_part}" "${root_a}"
+    mount "${img_root_a_part}" "${root_a}"
     # Mount the ROOT-A partition
-    mountIfNotAlready "${hdd_root_a_part}" "${local_root_a}"
+    mount "${hdd_root_a_part}" "${local_root_a}"
     # Delete all the contents of the partition
     rm -Rf "${local_root_a}"/*
     # Copy files
@@ -104,9 +104,9 @@ function main {
     
     echo -n "Step 2: Copying STATE..."
     # Mount partition#16 (STATE) of the image
-    mountIfNotAlready "${img_state_part}" "${state}"
+    mount "${img_state_part}" "${state}"
     # Mount the STATE partition of the HDD
-    mountIfNotAlready "${hdd_state_part}" "${local_state}"
+    mount "${hdd_state_part}" "${local_state}"
     # Delete all the contents of the local partition
     rm -Rf "${local_state}"/*
     # Copy files
