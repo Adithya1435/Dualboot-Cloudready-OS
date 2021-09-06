@@ -15,7 +15,7 @@ script to do that on a **Single hard disk (Not with Second hard disk)**.
 ## Dual Boot Cloudready with Windows
 
 1. Download latest version of [Cloudready bin](https://www.neverware.com/freedownload#intro-text)
-2. You can download the old versions of Cloudready from here: https://drive.google.com/drive/folders/1db-lMzvSeRsr1q7Eqj2cGQiKrfGRrU0Q?usp=sharing
+2. You can download the old versions of Cloudready from here: https://bit.ly/3h6h3Pe
 3. Download the [Dual Boot Script](https://codeload.github.com/Adithya1435/Dualboot-Cloudready/zip/refs/heads/master)
 4. Create a live USB of linux mint or ubuntu
 5. Extract & copy all the files into a new folder (*Makes the process easier*)
