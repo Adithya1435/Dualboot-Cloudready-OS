@@ -71,7 +71,7 @@ script to do that on a **Single hard disk (Not with Second hard disk)**.
 9. Now copy the grub entry, create a new text document and paste it in C drive or any other. (Don't copy the menuentry line from the grub)
 10. Reboot your PC and log in to Windows
  
-### Option 2 : Works only on Linux mint
+### Option 2 : Works on Linux Mint & Ubuntu
  
 1. Open terminal and run:
  ```
