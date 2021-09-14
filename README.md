@@ -65,7 +65,7 @@ script to do that on a **Single hard disk (Not with Second hard disk)**.
     `NEVERWARE_PARTITION_OFFSET=$(calculate_partition_offset)`  
     `PARTITION_NUM_EFI_SYSTEM=$((12 + NEVERWARE_PARTITION_OFFSET))`  
      
- > **The Example File Can Be Seen Here**: 
+ > **The Example File Can Be Seen Here**: [CLICK HERE!](https://user-images.githubusercontent.com/72510218/133206670-c068409d-0666-4b98-9e43-08fbbd3ceea8.jpeg)
  
 8. Now save the file and close it.
 9. Now copy the grub entry, create a new text document and paste it in C drive or any other. (Don't copy the menuentry line from the grub)
@@ -101,7 +101,7 @@ script to do that on a **Single hard disk (Not with Second hard disk)**.
     `NEVERWARE_PARTITION_OFFSET=$(calculate_partition_offset)`  
     `PARTITION_NUM_EFI_SYSTEM=$((12 + NEVERWARE_PARTITION_OFFSET))`  
      
-> **The Example File Can Be Seen Here** : 
+> **The Example File Can Be Seen Here** : [CLICK HERE!](https://user-images.githubusercontent.com/72510218/133206670-c068409d-0666-4b98-9e43-08fbbd3ceea8.jpeg)
 10. Now save the file and close it.
 11. Now copy the grub entry, create a new text document and paste it in C drive or any other. (Don't copy the menuentry line from the grub)
 12. Reboot your PC and log in to Windows
@@ -113,7 +113,7 @@ script to do that on a **Single hard disk (Not with Second hard disk)**.
 3. Now paste the grub entry from the text document and remove the **menuentry line including the curly braces** The grub entry should start from **insmod part.......** and end at **cros_debug**
 4. Save the text file and close Grub2Win
 5. Now reboot your PC and choose Cloudready.
-6. That's it now your PC should boot into Cloudready!
+6. That's it now your PC should boot into Cloudready! Enjoy!
 
 ## Dual Boot Cloudready with Linux
   
@@ -127,6 +127,41 @@ You can follow the same steps mentioned above to dualboot cloudready with linux.
 24. Now run `sudo update-grub`  
 25. That's it now reboot your PC and select Cloudready   
  > Note : Don't select Unknown linux distribution from grub instead select Cloudready
+ 
+## Updating Cloudready
+
+ You cannot natively update cloudready with this process so the cloudready-updater script helps to update cloudready to the latest version
+ 
+### Option 1 : Using updater script
+ 
+1. Download the recent version of cloudready bin from neverware
+2. Download the updater script from this repository
+3. Boot into linux with live USB 
+4. Install gedit and gnome-disk-utility
+5. Open the directory where you stored the bin file and updater script
+6. Rename **cloudready-free...bin** to **cloudready.img**
+7. Right click on cloudready.img and open with Disk Image Mounter
+8. Now open in terminal and run :
+```
+ sudo bash cloudready-updater.sh sdaB sdaC sdaD
+```
+> Note: sdaB-ROOT-A sdaC-STATE sdaD-OEM
+9. After it completes reboot and enjoy the new version of cloudready!
+ 
+### Option 2: Using Dual-boot script
+ 
+1. Download the recent version of cloudready bin from neverware
+2. Download the dualboot script script from this repository
+3. Boot into linux with live USB 
+4. Install gedit
+5. Open the directory where you stored the bin file and updater script
+6. Rename **cloudready-free...bin** to **cloudready.img**
+7. Open in terminal and run :
+```
+ sudo bash cloudready-dualboot.sh cloudready.img sdaB sdaC sdaD [--skip-state]
+```
+> Note: sdaB-ROOT-A sdaC-STATE sdaD-OEM
+8. After it completes reboot and enjoy the new version of cloudready!
  
 ## FAQ (Frequently Asked Questions)
  
