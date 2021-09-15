@@ -163,6 +163,11 @@ You can follow the same steps mentioned above to dualboot cloudready with linux.
 > Note: sdaB-ROOT-A sdaC-STATE sdaD-OEM
 8. After it completes reboot and enjoy the new version of cloudready!
  
+## Uninstalling Cloudready
+ 
+1. The only way is to delete the ROOT-A, OEM and STATE partitions from disk management in windows and create a new simple volume. (Gparted, if you are using linux)
+2. Uninstall Grub2Win (Optional)
+ 
 ## FAQ (Frequently Asked Questions)
  
 1. **Is dualbooting by this method safe?**  
