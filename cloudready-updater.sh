@@ -1,90 +1,65 @@
 #!/bin/bash
 
-if [ $UID -ne 0 ]; then
-    echo "This script must be run as root"
+if [ $(whoami) != "root" ]; then
+    echo "This script must be run as root!"
     exit 1
 fi
 
-#
-# Mount the partition if not already
-# $1: Partition name
-# $2: Mount point
-function mountIfNotAlready {
-    local part_name="$1"
-    local mount_point="$2"
-    if [ -e "${mount_point}" ]; then
-        umount "${mount_point}" 2> /dev/null
-        umount "${part_name}" 2> /dev/null
-        rm -rf "${mount_point}"
-    fi
-    mkdir "${mount_point}"
-    mount "${part_name}" "${mount_point}"
-}
+if [ -z $(which gedit) ]; then
+    echo
+    echo "ERROR: gedit needs to be installed first!"
+    echo
+    echo "Can be installed with [Ubuntu/Debian] : sudo apt-get install gedit"
+    exit 1 
+fi
 
-#
-# Get partition number from partition name
 function getPartNo {
     echo "$1" | sed -E 's|^.*((mmcblk\|nvme[0-9]+n)[0-9]+p\|sd[a-z]+)([0-9]+)$|\3|'
 }
 
-#
-# The main function
-# $1: cloudready.img
-# $2: EFI-SYSTEM parition
-# $3: ROOT-A partition
-# $4: STATE partition
 function main {
-    if ! [ $# -ge 4 ]; then
-        echo "Invalid argument"
-        echo "USAGE: bash cloudready-updater.sh <cloudready.img> <efi_part> <root_a_part> <state_part> [--skip state] <oem_part>"
+    if ! [ $# -ge 3 ]; then
+        echo "Invalid argument!"
+        echo "Usage: bash cloudready-updater.sh <root_a_part> <state_part> <oem_part>"
         exit 1
     fi
-    
-    local skip_state=1
-    if [ "$5" == "--skip-state" ]; then
-        skip_state=1
-    fi
-    
-    local cloudready_image=$1
-    local hdd_efi_part="/dev/$2"
-    local hdd_root_a_part="/dev/$3"
-    local hdd_state_part="/dev/$4"
-    local hdd_oem_part="/dev/$6"
-    
-    # Mount the image
-    local img_disk=`/sbin/losetup --show -fP "${cloudready_image}"`
-    local img_efi_part="${img_disk}p27"
-    local img_root_a_part="${img_disk}p18"
-    local img_state_part="${img_disk}p16"
-    
     local user=`logname`
-    if [ $? -ne 0 ]; then
-        user="chronos"
+    local hdd_root_a_part="/dev/$1"
+    local hdd_state_part="/dev/$2"
+    local hdd_oem_part="/dev/$3"
+    if [ ! -d "/media/"${user}"/ROOT-A" ]; then
+         echo "ERROR: Please mount the image before running this script!"
+         exit 1
     fi
-    local root="/home/${user}"
-    local efi_dir="${root}/efi"
-    local local_efi_dir="${root}/localefi"
-    local root_a="${root}/roota"
-    local local_root_a="${root}/localroota"
-    local state="${root}/state"
-    local local_state="${root}/localstate"
-    
-    echo 
-    echo "------------------"
-    echo "Cloudready Updater"
-    echo "------------------"
+    if [ ! -d "/home/"${user}"/localroot" ]; then
+         mkdir /home/"${user}"/localroot
+    fi
+    if [ ! -d "/home/"${user}"/localstate" ]; then
+         mkdir /home/"${user}"/localstate
+    fi
+    if [ ! -d "/home/"${user}"/localoem" ]; then
+         mkdir /home/"${user}"/localoem
+    fi
+    uuid="blkid -s UUID -o value /dev/$1"
+    mount "${hdd_root_a_part}" /home/"${user}"/localroot
+    mount "${hdd_state_part}" /home/"${user}"/localstate
+    mount "${hdd_oem_part}" /home/"${user}"/localoem
     echo
-    echo "Updating Cloudready.."
+    echo "------------------------"
+    echo "   Cloudready Updater"
+    echo "------------------------"
     echo
-    echo -n "Step 1: Copying EFI-SYSTEM..."
-    # Mount partition#12 (EFI-SYSTEM) of the image
-    mountIfNotAlready "${img_efi_part}" "${efi_dir}"
-    # Mount the EFI-SYSTEM partition of the HDD
-    mountIfNotAlready "${hdd_efi_part}" "${local_efi_dir}"
-    # Delete all the contents of the local partition
-    rm -Rf "${local_efi_dir}"/*
-    # Copy files
-    cp -a "${efi_dir}"/* "${local_efi_dir}" 2> /dev/null
+    sleep 1
+    echo "Updating Cloudready...."
+    sleep 1
+    echo "(Please wait this might take a while)"
+    echo
+    sleep 1
+    echo -n "Step 1: Writing partition 1 (ROOT-A)..."
+    #Delete all the contents
+    rm -Rf /home/"${user}"/localroot/*
+    #Copy the files from image to the localroot
+    cp -a /media/"${user}"/ROOT-A/* /home/"${user}"/localroot
     if [ $? -eq 0 ]; then
         echo "Done Succesfully"
     else
@@ -92,16 +67,9 @@ function main {
         echo "Failed Copying Files, Please check your image"
         exit 1
     fi
-
-    echo -n "Step 2: Copying ROOT-A..."
-    # Mount partition#3 (ROOT-A) of the image
-    mountIfNotAlready "${img_root_a_part}" "${root_a}"
-    # Mount the ROOT-A partition
-    mountIfNotAlready "${hdd_root_a_part}" "${local_root_a}"
-    # Delete all the contents of the partition
-    rm -Rf "${local_root_a}"/*
-    # Copy files
-    cp -a "${root_a}"/* "${local_root_a}" 2> /dev/null
+    echo -n "Step 2: Writing partition 2 (STATE)..."
+    #Copy the files from image to the localstate
+    cp -a /media/"${user}"/STATE/* /home/"${user}"/localstate
     if [ $? -eq 0 ]; then
         echo "Done Succesfully"
     else
@@ -109,77 +77,40 @@ function main {
         echo "Failed Copying Files, Please check your image"
         exit 1
     fi
-    echo "Step 3: Copying STATE..."
-    if [ ${skip_state} -ne 1 ]; then
-        echo "USAGE: bash cloudready-updater.sh <cloudready.img> <efi_part> <root_a_part> <state_part> [--skip state]"
-        echo "Invalid argument, Aborting"
-        exit 1
-    else
-        echo "Skipping STATE partition..."
-    fi
-
-    # Post installation
-    echo -n "Step 4: Modifying GRUB..."
-    local hdd_uuid=`/sbin/blkid -s PARTUUID -o value "${hdd_root_a_part}"`
-    local old_uuid=`cat "${local_efi_dir}/efi/boot/grub.cfg" | grep -m 1 "PARTUUID=" | awk '{print $15}' | cut -d'=' -f3`
-    sed -i "s/${old_uuid}/${hdd_uuid}/" "${local_efi_dir}/efi/boot/grub.cfg"
+    echo -n "Step 3: Writing partition 3 (OEM)..."
+    #Delete all the contents
+    rm -Rf /home/"${user}"/localoem/*
+    #Copy the files from image to the localstate
+    cp -a /media/"${user}"/OEM/* /home/"${user}"/localoem
     if [ $? -eq 0 ]; then
-        echo "Done."
+        echo "Done Succesfully"
     else
         echo
-        echo "Failed, please try fixing it manually."
-        # exit 1 # This isn't a critical error
+        echo "Failed Copying Files, Please check your image"
+        exit 1
     fi
-    
-    echo -n "Step 4: Updating partition data..."
-    local hdd_efi_part_no=`getPartNo "${hdd_efi_part}"`
+    echo -n "Step 4: Fixing partition data..."
     local hdd_root_a_part_no=`getPartNo "${hdd_root_a_part}"`
     local hdd_state_part_no=`getPartNo "${hdd_state_part}"`
     local hdd_oem_part_no=`getPartNo "${hdd_oem_part}"`
-    local write_gpt_path="${local_root_a}/usr/sbin/write_gpt.sh"
-    # Remove unnecessary partitions & update properties
-    cat "${write_gpt_path}" | grep -vE "_(KERN_(A|B|C)|2|4|6|ROOT_(B|C)|5|7|OEM|8|RESERVED|9|10|RWFW|11)" | sed \
-    -e "s/^\(\s*PARTITION_NUM_EFI_SYSTEM=\)\"[0-9]\+\"$/\1\"${hdd_efi_part_no}\"/g" \
-    -e "s/^\(\s*PARTITION_NUM_12=\)\"[0-9]\+\"$/\1\"${hdd_efi_part_no}\"/g" \
-    -e "s/^\(\s*PARTITION_NUM_ROOT_A=\)\"[0-9]\+\"$/\1\"${hdd_root_a_part_no}\"/g" \
-    -e "s/^\(\s*PARTITION_NUM_3=\)\"[0-9]\+\"$/\1\"${hdd_root_a_part_no}\"/g" \
-    -e "s/^\(\s*PARTITION_NUM_STATE=\)\"[0-9]\+\"$/\1\"${hdd_state_part_no}\"/g" \
-    -e "s/^\(\s*PARTITION_NUM_1=\)\"[0-9]\+\"$/\1\"${hdd_state_part_no}\"/g" \
-    -e "s/\(\s*DEFAULT_ROOTDEV=\).*$/\1\"\"/" | tee "${write_gpt_path}" > /dev/null
-    # -e "w ${write_gpt_path}" # Doesn't work on CrOS
-    if [ $? -eq 0 ]; then
-        echo "Done Succesfully"
-    else
-        echo
-        echo "Failed updating partition data, please try fixing it manually."
-        # exit 1 # This isn't a critical error
-    fi
-    echo -n "Step 5: Post installation..."
-    local tp_line=`grep -Fn "06cb:*" "${local_root_a}/etc/gesture/40-touchpad-cmt.conf" | sed 's/^\([0-9]\+\):.*$/\1/'`
-    tp_line=$((tp_line+3)) # Add at line#21
-    sed -i "${tp_line}a\    # Enable tap to click\n    Option          \"libinput Tapping Enabled\" \"1\"\n    Option          \"Tap Minimum Pressure\" \"0.1\"\n" "${local_root_a}/etc/gesture/40-touchpad-cmt.conf"
-    if [ $? -eq 0 ]; then
-        echo "Done."
-    else
-        echo
-        echo ""
-        # exit 1 # This isn't a critical error
-    fi
-    echo "Step 6: Fixing partition data..."
-    sed -i "s/#EFI/${hdd_efi_part_no}/g" partition-layout.sh
-    sed -i "s/#ROOTA/${hdd_root_a_part_no}/g" partition-layout.sh
+    sed -i "s/#ROOT/${hdd_root_a_part_no}/g" partition-layout.sh
     sed -i "s/#STATE/${hdd_state_part_no}/g" partition-layout.sh
     sed -i "s/#OEM/${hdd_oem_part_no}/g" partition-layout.sh
-    cp partition-layout.sh ${local_root_a}/usr/share/misc
+    gedit partition-layout.sh
+    gedit /home/"${user}"/localroot/usr/share/misc/partition-layout.sh
     if [ $? -eq 0 ]; then
         echo "Done Succesfully"
     else
         echo
         echo "Fixing Partition data Failed, try fixing it manually"
     fi
-    echo "Installation complete!"
+    echo "Step 5: Unmounting the partitions..."
+    umount /home/"${user}"/localroot
+    umount /home/"${user}"/localstate
+    umount /home/"${user}"/localoem
+    echo
+    echo "Cloudready Updated!"
     exit 0
 }
-
 # Exec part
 main "$@"
