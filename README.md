@@ -2,6 +2,10 @@
 
 The purpose of this project is to dual-boot latest version of cloudready. Neverware has stopped the dual boot functionality from Cloudready v64. So here is the 
 script to do that on a **Single hard disk (Not with Second hard disk)**.
+
+
+**Note: This script does not work for cloudready version 92 and above**
+
   
 ## Video Guide
 
