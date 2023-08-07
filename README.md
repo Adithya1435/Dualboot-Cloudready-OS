@@ -4,7 +4,7 @@ The purpose of this project is to dual-boot latest version of cloudready. Neverw
 script to do that on a **Single hard disk (Not with Second hard disk)**.
 
 
-**Note: This script does not work for cloudready version 92 and above**
+**Note: This script does not work for cloudready version 94 and above**
 
   
 ## Video Guide
